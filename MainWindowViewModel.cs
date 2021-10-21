@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Forms;
+using TagLib;
+using File = TagLib.File;
 
 namespace MP3Tagger
 {
@@ -94,7 +96,43 @@ namespace MP3Tagger
 
         private void RemoveSuffixAndDoTagging(object param)
         {
+            RemoveSuffix(new object());
 
+            var di = new DirectoryInfo(_pathToFolder);
+
+            var errorList = new List<string>();
+
+            foreach (var file in di.GetFiles())
+            {
+                var fileExtension = file.Extension;
+                var fileNameWithoutExtension = file.Name.Replace(fileExtension, "");
+                var names = fileNameWithoutExtension.Split("-");
+                names[0] = names[0].Trim();
+                names[1] = names[1].Trim();
+
+                try
+                {
+                    var song = File.Create(file.FullName);
+                    song.Tag.Performers = new[] { names[0] };
+                    song.Tag.Title = names[1];
+                    song.Save();
+                }
+                catch (Exception)
+                {
+                    errorList.Add($"There was error in file '{file.FullName}'");
+                }
+            }
+
+            if (errorList.Count > 0)
+            {
+                var errorString = "";
+                foreach (var error in errorList)
+                {
+                    errorString += error + Environment.NewLine + Environment.NewLine;
+                }
+
+                MessageBox.Show(errorString, "Error!");
+            }
         }
     }
 }
