@@ -1,8 +1,12 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
+using System.Windows.Forms;
 
 namespace MP3Tagger
 {
@@ -35,6 +39,7 @@ namespace MP3Tagger
             CommandOpenFolder = new RelayCommand(OpenFolder, CanOpenFolder);
             CommandRemoveSuffix = new RelayCommand(RemoveSuffix, CanTagAndDelete);
             CommandRemoveSuffixAndDoTagging = new RelayCommand(RemoveSuffixAndDoTagging, CanTagAndDelete);
+            SuffixToRemove = "myfreemp3.vip";
         }
 
         public RelayCommand CommandRemoveSuffix { get; set; }
@@ -57,25 +62,39 @@ namespace MP3Tagger
 
         private void OpenFolder(object param)
         {
+            var fbd = new FolderBrowserDialog();
 
+            if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+            {
+                PathToFolder = fbd.SelectedPath;
+            }
         }
 
         private void RemoveSuffix(object param)
         {
+            var di = new DirectoryInfo(_pathToFolder);
 
+            foreach (var file in di.GetFiles())
+            {
+                if (string.IsNullOrEmpty(file.Extension) == false)
+                {
+                    var fileExtension = file.Extension;
+                    var fileNameWithoutExtension = file.FullName.Replace(fileExtension, "");
+                    var newFileName = fileNameWithoutExtension.Replace(_suffixToRemove, "").TrimEnd();
+                    if (newFileName.ToLower().Contains("(original mix)"))
+                    {
+                        //removing duplicate original mix
+                        newFileName = newFileName.ToLower().Replace("(original mix)", "").TrimEnd() + " (Original Mix)";
+                    }
+
+                    file.MoveTo(newFileName + fileExtension);
+                }
+            }
         }
 
         private void RemoveSuffixAndDoTagging(object param)
         {
 
         }
-
-
-
-
-
-
-
-
     }
 }
