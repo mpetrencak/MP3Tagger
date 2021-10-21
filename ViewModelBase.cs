@@ -10,7 +10,5 @@ namespace MP3Tagger
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-
-
     }
 }

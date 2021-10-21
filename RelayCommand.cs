@@ -28,7 +28,6 @@ namespace MP3Tagger
 
         }
 
-
         public RelayCommand(Action<object> action, Func<bool> canExecute)
         {
             _action = action;
@@ -39,7 +38,6 @@ namespace MP3Tagger
         {
             CommandManager.InvalidateRequerySuggested();
         }
-
 
         public bool CanExecute(object parameter)
         {
