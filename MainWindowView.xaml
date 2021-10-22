@@ -32,7 +32,8 @@
         <TextBox Text="{Binding SuffixToRemove, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="2" MinWidth="200" Margin="20,10,0,0"/>
 
         <Button x:Name="ButtonRemoveSuffix" Command="{Binding CommandRemoveSuffix}" Content="Remove" Grid.Row="3" Grid.Column="3" MinWidth="40" Margin="20,10,0,0" />
-        <Button x:Name="ButtonRemoveSuffixAndDoTagging" Command="{Binding CommandRemoveSuffixAndDoTagging}" Content="Remove and Tag" Grid.Row="3" Grid.Column="2" MinWidth="40" Margin="20,10,0,0" />
+        <Button x:Name="ReplaceUnderscore" Command="{Binding CommandReplaceUnderscore}" Content="Replace _" Grid.Row="3" Grid.Column="2" MaxWidth="100" HorizontalAlignment="Left" MinWidth="40" Margin="20,10,0,0" />
+        <Button x:Name="RemoveSuffixAndDoTagging" Command="{Binding CommandRemoveSuffixAndDoTagging}" Content="Remove and Tag" Grid.Row="3" Grid.Column="2" MinWidth="40" MaxWidth="100" HorizontalAlignment="Right" Margin="20,10,0,0" />
 
         <StatusBar Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="4"></StatusBar>
 

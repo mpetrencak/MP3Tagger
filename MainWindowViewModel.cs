@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection.Metadata.Ecma335;
 using System.Windows.Forms;
 using File = TagLib.File;
 
@@ -33,16 +34,18 @@ namespace MP3Tagger
         public MainWindowViewModel()
         {
             CommandOpenFolder = new RelayCommand(OpenFolder, CanOpenFolder);
-            CommandRemoveSuffix = new RelayCommand(RemoveSuffix, CanTagAndDelete);
-            CommandRemoveSuffixAndDoTagging = new RelayCommand(RemoveSuffixAndDoTagging, CanTagAndDelete);
+            CommandRemoveSuffix = new RelayCommand(RemoveSuffix, CanUseButtons);
+            CommandRemoveSuffixAndDoTagging = new RelayCommand(RemoveSuffixAndDoTagging, CanUseButtons);
+            CommandReplaceUnderscore = new RelayCommand(ReplaceUnderscore, CanUseButtons);
             SuffixToRemove = "myfreemp3.vip";
         }
 
         public RelayCommand CommandRemoveSuffix { get; set; }
         public RelayCommand CommandRemoveSuffixAndDoTagging { get; set; }
         public RelayCommand CommandOpenFolder { get; set; }
+        public RelayCommand CommandReplaceUnderscore { get; set; }
 
-        private bool CanTagAndDelete()
+        private bool CanUseButtons()
         {
             if (string.IsNullOrWhiteSpace(_pathToFolder) || string.IsNullOrWhiteSpace(_suffixToRemove))
             {
@@ -64,6 +67,22 @@ namespace MP3Tagger
             {
                 PathToFolder = fbd.SelectedPath;
             }
+        }
+
+        private void ReplaceUnderscore(object param)
+        {
+            var di = new DirectoryInfo(_pathToFolder);
+
+            foreach (var file in di.GetFiles())
+            {
+                if (file.Name.Contains("_"))
+                {
+                    var newName = file.Name.Replace("_", " ");
+                    file.MoveTo(file.DirectoryName+ "/" + newName);
+                    continue;
+                }
+            }
+
         }
 
         private void RemoveSuffix(object param)
